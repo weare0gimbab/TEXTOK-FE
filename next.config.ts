@@ -3,31 +3,19 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
-      // s3 bucket
-      {
-        protocol: 'https',
-        hostname: 'hm-dev-images.s3.ap-northeast-2.amazonaws.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'hm-dev-images.s3.ap-northeast-2.amazonaws.com',
-        pathname: '/**',
-      },
-
       // 배포 s3 버킷
       {
         protocol: 'https',
-        hostname: 'next5-app-bucket.s3.ap-northeast-2.amazonaws.com',
+        hostname: 'textok-prod-bucket.s3.ap-northeast-2.amazonaws.com',
         pathname: '/**',
       },
       {
         protocol: 'http',
-        hostname: 'next5-app-bucket.s3.ap-northeast-2.amazonaws.com',
+        hostname: 'textok-prod-bucket.s3.ap-northeast-2.amazonaws.com',
         pathname: '/**',
       },
 
-      // --- next5 dev images ---
+      // --- textok dev images ---
       {
         protocol: 'https',
         hostname: 'next5-dev-images.s3.ap-northeast-2.amazonaws.com',

@@ -1,11 +1,11 @@
 'use client';
 
 import { addLike, getLikeStatus, removeLike } from '@/src/api/shorlogLikeApi';
+import { useCurrentUser } from '@/src/hooks/useCurrentUser';
 import { handleApiError } from '@/src/lib/handleApiError';
 import { showGlobalToast } from '@/src/lib/toastStore';
-import { Heart } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import { Heart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface LikeButtonProps {
@@ -28,52 +28,43 @@ export default function LikeButton({
   showCount = true,
 }: LikeButtonProps) {
   const queryClient = useQueryClient();
+  const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
+
+  const isLoggedIn = !!currentUser;
+  const currentUserId = currentUser?.id ?? null;
+
   const [isLiked, setIsLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
   // 로그인 상태 및 좋아요 상태 확인
   useEffect(() => {
-    const checkAuthAndLikeStatus = async () => {
+    let cancelled = false;
+
+    (async () => {
       try {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
-        // 현재 사용자 정보 가져오기
-        const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
-          credentials: 'include',
-          cache: 'no-store',
-        });
-
-        if (response.ok) {
-          const json = await response.json();
-          const user = json.data;
-          setCurrentUserId(user?.id);
-          setIsLoggedIn(true);
-        } else {
-          setIsLoggedIn(false);
-          setCurrentUserId(null);
+        const likeStatus = await getLikeStatus(shorlogId); // 서버가 비로그인도 카운트 주고 isLiked=false로 주게 설계 권장
+        if (!cancelled) {
+          setIsLiked(likeStatus.isLiked);
+          setLikeCount(likeStatus.likeCount);
         }
-
-        // 좋아요 상태 확인
-        const likeStatus = await getLikeStatus(shorlogId);
-        setIsLiked(likeStatus.isLiked);
-        setLikeCount(likeStatus.likeCount);
-      } catch (error) {
-        setIsLoggedIn(false);
-        // 좋아요 상태 조회 실패 시 초기값 사용
+      } catch {
+        // 실패하면 초기값 유지
       } finally {
-        setIsCheckingStatus(false);
+        if (!cancelled) setIsCheckingStatus(false);
       }
-    };
+    })();
 
-    checkAuthAndLikeStatus();
+    return () => {
+      cancelled = true;
+    };
   }, [shorlogId]);
 
   // 좋아요/좋아요 취소 토글
   const handleToggleLike = async () => {
+    if (isUserLoading) return; // 로딩 중일 때 아무것도 하지 않음
     // 로그인 확인
     if (!isLoggedIn) {
       showGlobalToast('로그인이 필요한 기능입니다.', 'warning');
@@ -89,38 +80,28 @@ export default function LikeButton({
     setIsLoading(true);
     setIsAnimating(true);
 
-    try {
-      let result;
-      if (isLiked) {
-        result = await removeLike(shorlogId);
-      } else {
-        result = await addLike(shorlogId);
+      try {
+        const result = isLiked ? await removeLike(shorlogId) : await addLike(shorlogId);
+
+        setIsLiked(result.isLiked);
+        setLikeCount(result.likeCount);
+
+        if (result.isLiked) showGlobalToast('좋아요를 눌렀습니다.', 'success');
+        else showGlobalToast('좋아요를 취소했습니다.', 'success');
+
+        // React Query 캐시 무효화
+        queryClient.invalidateQueries({ queryKey: ['shorlog-feed'] });
+        queryClient.invalidateQueries({ queryKey: ['profile'] });
+        queryClient.invalidateQueries({ queryKey: ['shorlog-detail'] });
+
+        // 애니메이션 완료 후 상태 초기화
+        setTimeout(() => setIsAnimating(false), 300);
+      } catch (error) {
+        handleApiError(error, '좋아요 처리');
+        setIsAnimating(false);
+      } finally {
+        setIsLoading(false);
       }
-
-      setIsLiked(result.isLiked);
-      setLikeCount(result.likeCount);
-      onLikeChange?.(result.isLiked, result.likeCount);
-
-      // 토스트 알림 표시
-      if (result.isLiked) {
-        showGlobalToast('좋아요를 눌렀습니다.', 'success');
-      } else {
-        showGlobalToast('좋아요를 취소했습니다.', 'success');
-      }
-
-      // React Query 캐시 무효화
-      queryClient.invalidateQueries({ queryKey: ['shorlog-feed'] });
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-      queryClient.invalidateQueries({ queryKey: ['shorlog-detail'] });
-
-      // 애니메이션 완료 후 상태 초기화
-      setTimeout(() => setIsAnimating(false), 300);
-    } catch (error) {
-      handleApiError(error, '좋아요 처리');
-      setIsAnimating(false);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   // 로딩 중일 때 표시할 컴포넌트

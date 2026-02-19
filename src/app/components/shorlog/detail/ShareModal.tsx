@@ -42,7 +42,7 @@ export default function ShareModal({
     title,
     description: description.length > 160 ? `${description.substring(0, 157)}...` : description,
     imageUrl,
-    url: `${typeof window !== 'undefined' ? window.location.origin : 'https://www.textok.site'}/shorlog/${shorlogId}`,
+    url: `${typeof window !== 'undefined' ? window.location.origin : 'https://www.textok.store'}/shorlog/${shorlogId}`,
     author
   };
 
