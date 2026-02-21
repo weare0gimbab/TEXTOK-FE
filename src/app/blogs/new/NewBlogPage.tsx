@@ -64,7 +64,7 @@ export default function NewBlogPage({ editId }: NewBlogPageProps) {
     const checkAuth = async () => {
       try {
         // 로그인 유저 조회 엔드포인트 사용
-        const me = await apiClient<any>('/api/v1/users/me', {
+        const me = await apiClient<unknown>('/api/v1/users/me', {
           method: 'GET',
         });
 
@@ -74,7 +74,7 @@ export default function NewBlogPage({ editId }: NewBlogPageProps) {
           setIsLoggedIn(false);
           setShowLoginModal(true);
         }
-      } catch (e: any) {
+      } catch {
         // 401 포함: 비로그인으로 간주
         setIsLoggedIn(false);
         setShowLoginModal(true);
@@ -113,7 +113,7 @@ export default function NewBlogPage({ editId }: NewBlogPageProps) {
         }));
         setBlogImages(detail.images ?? []);
         setThumbnailUrl(detail.thumbnailUrl ?? null);
-      } catch (e) {
+      } catch {
         showGlobalToast('글 정보를 불러오지 못했습니다.', 'error');
 
         router.push('/blogs');
@@ -184,7 +184,7 @@ export default function NewBlogPage({ editId }: NewBlogPageProps) {
     try {
       const list = await fetchDrafts();
       setDrafts(list);
-    } catch (e) {
+    } catch {
       // console.error(e);
       showGlobalToast('임시저장 목록을 불러오지 못했습니다.', 'error');
     } finally {
@@ -208,7 +208,7 @@ export default function NewBlogPage({ editId }: NewBlogPageProps) {
       setThumbnailUrl(detail.thumbnailUrl ?? null);
 
       setIsDraftModalOpen(false);
-    } catch (e) {
+    } catch {
       // console.error(e);
       showGlobalToast('임시저장 글을 불러오지 못했습니다.', 'error');
     }
@@ -230,7 +230,7 @@ export default function NewBlogPage({ editId }: NewBlogPageProps) {
         });
       }
       showGlobalToast('임시저장을 삭제했어요.', 'success');
-    } catch (e) {
+    } catch {
       // console.error(e);
       showGlobalToast('삭제 중 오류가 발생했습니다.', 'error');
     }
@@ -346,7 +346,7 @@ export default function NewBlogPage({ editId }: NewBlogPageProps) {
           blogId={publishedBlogId}
           onClose={handleCloseConnectModal}
           onSkip={handleCloseConnectModal}
-          onLinked={(res) => {
+          onLinked={() => {
             handleCloseConnectModal();
           }}
           onCreateNewShorlog={() => router.push(`/shorlog/create?blogId=${publishedBlogId}`)}

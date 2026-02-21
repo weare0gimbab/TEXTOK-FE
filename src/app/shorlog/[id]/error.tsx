@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export default function ShorlogDetailError({
   error,
   reset,
@@ -25,12 +27,12 @@ export default function ShorlogDetailError({
           >
             다시 시도
           </button>
-          <a
+          <Link
             href="/shorlog/feed"
             className="flex-1 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
           >
             피드로 돌아가기
-          </a>
+          </Link>
         </div>
       </div>
     </div>
