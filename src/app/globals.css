@@ -36,3 +36,27 @@
   animation: fadeIn 0.2s ease-out forwards;
 }
 
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.25s ease-out forwards;
+}
+
+/* 모바일 탭바 safe-area 대응 */
+.pb-safe-tab {
+  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+}
+
+.h-tab-bar {
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+}
+

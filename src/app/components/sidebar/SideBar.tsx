@@ -123,7 +123,7 @@ export default function Sidebar() {
         className={`
           ${isCollapsed ? 'w-20' : 'w-60'}
           bg-white border-r border-gray-200
-          h-screen fixed flex flex-col
+          h-screen fixed hidden md:flex md:flex-col
           transition-all duration-300 ease-in-out
           z-[60]
         `}
@@ -409,13 +409,15 @@ export default function Sidebar() {
         </nav>
       </aside>
 
-      {/* 알림 패널 */}
-      <NotificationPanel
-        open={isNotificationOpen}
-        onClose={closePanelFn}
-        sidebarWidth={sidebarWidth}
-        sidebarRef={sidebarRef}
-      />
+      {/* 알림 패널 - 데스크탑(md 이상)에서만 표시 */}
+      <div className="hidden md:block">
+        <NotificationPanel
+          open={isNotificationOpen}
+          onClose={closePanelFn}
+          sidebarWidth={sidebarWidth}
+          sidebarRef={sidebarRef}
+        />
+      </div>
     </>
   );
 }

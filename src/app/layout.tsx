@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import { AuthProvider } from '../providers/AuthProvider';
 import { LoginModalProvider } from '../providers/LoginModalProvider';
@@ -7,6 +7,7 @@ import LoginModal from './components/auth/LoginModal';
 import { ToastContainer } from './components/common/ToastContainer';
 import MessagesRealtimeInitializer from './components/messages/MessagesRealtimeInitializer';
 import NotificationInitializer from './components/notifications/NotificationInitializer';
+import MobileTabBar from './components/sidebar/MobileTabBar';
 import Sidebar from './components/sidebar/SideBar';
 import './globals.css';
 
@@ -15,6 +16,10 @@ export const metadata: Metadata = {
   icons: {
     icon: '/icons/titleBook.png',
   },
+};
+
+export const viewport: Viewport = {
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -56,9 +61,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Sidebar />
                 <main
                   className="
-                  flex-1 bg-white 
-                  pl-20 
+                  flex-1 bg-white
+                  md:pl-20
                   xl:pl-60
+                  pb-safe-tab md:pb-0
                   transition-all duration-300
                 "
                 >
@@ -66,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </main>
                 <ToastContainer />
               </div>
+              <MobileTabBar />
               <LoginModal />
             </LoginModalProvider>
           </AuthProvider>

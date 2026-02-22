@@ -7,12 +7,12 @@ import { useEffect, useState } from 'react';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-type RecommendedKeyword = {
+export type RecommendedKeyword = {
   keyword: string;
   count: number;
 };
 
-type SearchHistoryItem = {
+export type SearchHistoryItem = {
   id: number;
   keyword: string;
   createdAt: string;
