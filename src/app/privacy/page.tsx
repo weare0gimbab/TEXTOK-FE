@@ -46,17 +46,6 @@ function Callout({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function PrivacyPage() {
-  const toc = [
-    { id: 'intro', label: '0. 안내' },
-    { id: 'collect', label: '1. 무엇을 수집하나요' },
-    { id: 'purpose', label: '2. 어디에 사용하나요' },
-    { id: 'retention', label: '3. 얼마나 보관하나요' },
-    { id: 'rights', label: '4. 동의 거부권' },
-    { id: 'security', label: '5. 어떻게 보호하나요' },
-    { id: 'outsourcing', label: '6. 개인정보 처리 위탁 및 국외 이전' },
-    { id: 'contact', label: '7. 문의' },
-  ];
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-white via-slate-50/50 to-white text-slate-900">
       <div className="mx-auto w-full max-w-4xl px-4 py-12">

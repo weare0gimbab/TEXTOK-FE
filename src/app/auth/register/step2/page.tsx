@@ -419,7 +419,7 @@ export default function RegisterStep2Page() {
                     type="button"
                     key={g.value}
                     onClick={() => {
-                      setGender(g.value as any);
+                      setGender(g.value as 'FEMALE' | 'MALE' | 'OTHER');
                       setGenderError('');
                     }}
                     className={`flex-1 h-10 rounded-md border text-sm transition

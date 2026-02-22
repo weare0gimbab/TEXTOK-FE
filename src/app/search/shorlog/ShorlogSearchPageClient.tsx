@@ -1,10 +1,10 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import { searchShorlogs, ShorlogSearchSort, ShorlogSearchItem } from '../../../api/shorlogSearchApi';
+import { searchShorlogs, ShorlogSearchSort } from '../../../api/shorlogSearchApi';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ShorlogSearchCard from '../../components/shorlog/search/ShorlogSearchCard';
 
@@ -59,7 +59,6 @@ export default function ShorlogSearchPageClient() {
   }, [data]);
 
   const isEmpty = !isLoading && items.length === 0;
-  const totalCount = data?.pages[0]?.totalElements ?? 0;
 
   // 검색어가 없으면 검색 안내 표시
   if (!keyword) {
@@ -171,7 +170,7 @@ function EmptySearchState({ keyword }: { keyword: string }) {
           </svg>
         </div>
         <p className="mt-4 text-lg font-medium text-slate-900">
-          "{keyword}"에 대한 검색 결과가 없습니다
+          {'"'}{keyword}{'"'}에 대한 검색 결과가 없습니다
         </p>
         <p className="mt-2 text-sm text-slate-500">
           다른 검색어로 시도해보세요

@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/src/providers/AuthProvider';
 import { X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 
 // ⭐ 추가: 모달 import
@@ -18,11 +18,7 @@ export default function MorePanel({
   setShowLogoutModal: (value: boolean) => void;
 }) {
   const { logout } = useAuth();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [mounted] = useState<boolean>(() => typeof document !== 'undefined');
 
   const handleLogout = async () => {
     await logout();

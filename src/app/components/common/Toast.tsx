@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Check, X, AlertCircle, Info } from 'lucide-react';
 
@@ -69,13 +69,9 @@ interface ToastContainerProps {
 }
 
 export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
-  const [mounted, setMounted] = useState(false);
+  const [mounted] = useState<boolean>(() => typeof document !== 'undefined');
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted || typeof document === 'undefined') {
+  if (!mounted) {
     return null;
   }
 
@@ -95,6 +91,7 @@ export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
 
 // Toast Hook
 export function useToast() {
+  const nextId = useRef(0);
   const [toasts, setToasts] = useState<Array<{
     id: string;
     message: string;
@@ -103,7 +100,7 @@ export function useToast() {
   }>>([]);
 
   const addToast = (message: string, type: ToastType = 'info', duration?: number) => {
-    const id = Math.random().toString(36).substr(2, 9);
+    const id = String(nextId.current++);
     setToasts(prev => [...prev, { id, message, type, duration }]);
   };
 

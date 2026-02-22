@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCurrentUser } from '@/src/hooks/useCurrentUser';
 import { useFollowStatus, useFollowMutation } from '@/src/hooks/useFollow';

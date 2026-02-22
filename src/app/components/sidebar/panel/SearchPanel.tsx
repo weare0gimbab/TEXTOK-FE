@@ -32,7 +32,6 @@ export default function SearchPanel({
   const [top10Keywords, setTop10Keywords] = useState<RecommendedKeyword[]>([]);
   const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([]);
   const [autocomplete, setAutocomplete] = useState<RecommendedKeyword[]>([]);
-  const [loading, setLoading] = useState(true);
   const debouncedKeyword = useDebounce(keyword, 300); // 0.3초 후 요청
   const router = useRouter();
 
@@ -48,7 +47,7 @@ export default function SearchPanel({
         if (recommended) setTop10Keywords(recommended);
         if (history) setSearchHistory(history);
       } finally {
-        setLoading(false);
+        // 로드 완료
       }
     }
 

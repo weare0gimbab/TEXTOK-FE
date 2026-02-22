@@ -8,6 +8,22 @@ import { useRouter } from 'next/navigation';
 
 import ConfirmLogoutModal from '../ConfirmLogoutModal';
 
+function ItemBtn({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="
+        w-full text-left font-semibold
+        py-2 px-2 rounded-lg
+        hover:bg-gray-100 transition
+      "
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function MorePanel({
   onClose,
   showLogoutModal,
@@ -31,20 +47,6 @@ export default function MorePanel({
     onClose(); // ✅ 패널 닫고 이동 (UX 깔끔)
     router.push(href);
   };
-
-  const ItemBtn = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      className="
-        w-full text-left font-semibold
-        py-2 px-2 rounded-lg
-        hover:bg-gray-100 transition
-      "
-    >
-      {children}
-    </button>
-  );
 
   return (
     <>

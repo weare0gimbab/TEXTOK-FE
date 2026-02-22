@@ -4,7 +4,6 @@ import { addBookmark, getBookmarkStatus, removeBookmark } from '@/src/api/shorlo
 import { handleApiError } from '@/src/lib/handleApiError';
 import { showGlobalToast } from '@/src/lib/toastStore';
 import { Bookmark } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
@@ -63,7 +62,7 @@ export default function BookmarkButton({
         } else {
           setIsLoggedIn(false);
         }
-      } catch (error) {
+      } catch {
         setIsLoggedIn(false);
       } finally {
         setIsCheckingAuth(false);

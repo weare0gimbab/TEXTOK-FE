@@ -2,6 +2,7 @@
 
 import { useCurrentUser } from '@/src/hooks/useCurrentUser';
 import { useLoginModal } from '@/src/providers/LoginModalProvider';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import './MainPage.css';
 import LoadingSpinner from './components/common/LoadingSpinner';
@@ -94,7 +95,7 @@ export default function MainPage() {
 
         {/* 오른쪽: 이미지 영역 */}
         <section className="illustration">
-          <img src="/icons/main_page.jpg" alt="Writing and Communication" className="hero-image" />
+          <Image src="/icons/main_page.jpg" alt="Writing and Communication" width={600} height={450} className="hero-image" />
         </section>
       </main>
     </div>

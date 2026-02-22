@@ -46,21 +46,6 @@ function Callout({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function TermsPage() {
-  const toc = [
-    { id: 'purpose', label: '1. 목적' },
-    { id: 'definitions', label: '2. 용어 정리' },
-    { id: 'changes', label: '3. 약관 변경' },
-    { id: 'account', label: '4. 회원가입/계정' },
-    { id: 'service', label: '5. 서비스 제공' },
-    { id: 'content', label: '6. 콘텐츠 권리' },
-    { id: 'prohibited', label: '7. 금지행위' },
-    { id: 'moderation', label: '8. 운영 정책' },
-    { id: 'withdraw', label: '9. 탈퇴/콘텐츠' },
-    { id: 'liability', label: '10. 책임' },
-    { id: 'law', label: '11. 분쟁/준거법' },
-    { id: 'contact', label: '12. 문의' },
-  ];
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-white via-slate-50/50 to-white text-slate-900">
       <div className="mx-auto w-full max-w-4xl px-4 py-12">

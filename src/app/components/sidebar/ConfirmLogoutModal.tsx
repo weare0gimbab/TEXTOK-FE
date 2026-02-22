@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 
 type ConfirmLogoutModalProps = {
@@ -9,11 +9,7 @@ type ConfirmLogoutModalProps = {
 };
 
 export default function ConfirmLogoutModal({ onConfirm, onCancel }: ConfirmLogoutModalProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [mounted] = useState<boolean>(() => typeof document !== 'undefined');
 
   if (!mounted) return null;
 

@@ -6,17 +6,11 @@ import { createPortal } from 'react-dom';
 
 export default function SearchPanel({ onClose }: { onClose: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [mounted, setMounted] = useState(false);
+  const [mounted] = useState<boolean>(() => typeof document !== 'undefined');
 
   useEffect(() => {
-    setMounted(true);
+    inputRef.current?.focus(); // 자동 포커스
   }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      inputRef.current?.focus(); // 자동 포커스
-    }
-  }, [mounted]);
 
   if (!mounted) return null;
 

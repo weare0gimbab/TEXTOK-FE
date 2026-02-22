@@ -5,14 +5,13 @@ import { useLoginModal } from '@/src/providers/LoginModalProvider';
 import { AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const COMMON_LOGIN_ERROR = '아이디 또는 비밀번호를 다시 확인해주세요.';
 
 export default function LoginModal() {
   const pathname = usePathname();
-  const router = useRouter();
   const { isOpen, close } = useLoginModal();
   const { refreshUser } = useAuth();
 

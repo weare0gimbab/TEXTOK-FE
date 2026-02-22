@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function FindIdPage() {
   return (
     <div className="w-full h-screen flex flex-col items-center justify-start pt-20 px-4 text-center">
@@ -8,12 +10,12 @@ export default function FindIdPage() {
         <br />곧 사용할 수 있게 준비하겠습니다 😊
       </p>
 
-      <a
+      <Link
         href="/"
         className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
       >
         메인으로 돌아가기
-      </a>
+      </Link>
     </div>
   );
 }

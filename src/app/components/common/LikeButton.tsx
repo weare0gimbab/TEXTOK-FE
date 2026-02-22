@@ -23,7 +23,6 @@ export default function LikeButton({
   authorId,
   initialLiked = false,
   initialLikeCount = 0,
-  onLikeChange,
   variant = 'default',
   showCount = true,
 }: LikeButtonProps) {

@@ -19,10 +19,10 @@ export default function FindPasswordPage() {
 
   // 상태
   const [usernameError, setUsernameError] = useState('');
-  const [isUserValid, setIsUserValid] = useState(false);
+  const [, setIsUserValid] = useState(false);
 
   const [sendMsg, setSendMsg] = useState('');
-  const [sendError, setSendError] = useState('');
+  const [, setSendError] = useState('');
 
   const [verifyMsg, setVerifyMsg] = useState('');
   const [verifyError, setVerifyError] = useState('');

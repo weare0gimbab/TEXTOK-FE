@@ -70,19 +70,11 @@ export default function Sidebar() {
 
   useEffect(() => {
     function handleResize() {
-      if (window.innerWidth < 1280) {
+      if (openPanel !== 'none' || window.innerWidth < 1280) {
         setIsCollapsed(true);
       } else {
-        // 패널이 열려있지 않을 때만 사이드바 확장
-        if (openPanel === 'none') {
-          setIsCollapsed(false);
-        }
+        setIsCollapsed(false);
       }
-    }
-
-    // 패널 상태에 따라 사이드바 축소/확장 관리
-    if (openPanel !== 'none') {
-      setIsCollapsed(true);
     }
 
     handleResize();
@@ -121,12 +113,8 @@ export default function Sidebar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [openPanel, showLogoutModal]);
 
-  // 검색 페이지 벗어나면 search keyword 제거
-  useEffect(() => {
-    if (!pathname.startsWith('/search')) {
-      setSidebarKeyword('');
-    }
-  }, [pathname]);
+  // 검색 페이지에서만 키워드 표시
+  const effectiveSidebarKeyword = pathname.startsWith('/search') ? sidebarKeyword : '';
 
   return (
     <>
@@ -217,7 +205,7 @@ export default function Sidebar() {
               <input
                 type="text"
                 readOnly
-                value={sidebarKeyword}
+                value={effectiveSidebarKeyword}
                 placeholder="검색어를 입력하세요"
                 className={`
                   bg-transparent text-sm outline-none text-slate-800 placeholder:text-slate-400
@@ -230,7 +218,7 @@ export default function Sidebar() {
 
           {isSearchOpen && (
             <SearchPanel
-              initialKeyword={sidebarKeyword}
+              initialKeyword={effectiveSidebarKeyword}
               onClose={closePanelFn}
               onSearch={(keyword: string) => setSidebarKeyword(keyword)}
             />
@@ -354,10 +342,13 @@ export default function Sidebar() {
                     `}
                   >
                     {isProfile && isLogin ? (
-                      <img
+                      <Image
                         src={loginUser?.profileImgUrl || '/tmpProfile.png'}
                         alt="profile"
+                        width={28}
+                        height={28}
                         className="w-7 h-7 rounded-full object-cover"
+                        unoptimized
                       />
                     ) : (
                       <div

@@ -2,11 +2,10 @@
 
 import SearchTabs from '@/src/app/components/search/SearchTabs';
 import SortFilter from '@/src/app/components/search/SortFilter';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const keyword = searchParams.get('keyword') || '';
   const tab = searchParams.get('tab') || 'shortlog';

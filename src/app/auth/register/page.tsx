@@ -6,7 +6,6 @@ import { useState } from 'react';
 
 const API = process.env.NEXT_PUBLIC_API_BASE_URL;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const idRegex = /^[a-z0-9]+$/; // 영문 소문자 + 숫자
 
 export default function RegisterStep1Page() {
   const router = useRouter();
@@ -35,7 +34,6 @@ export default function RegisterStep1Page() {
   const [verifyError, setVerifyError] = useState('');
 
   // ID 중복 체크
-  const [idLoading, setIdLoading] = useState(false);
   const [idAvailable, setIdAvailable] = useState(false);
   const [idCheckMsg, setIdCheckMsg] = useState('');
   const [idCheckLoading, setIdCheckLoading] = useState(false);

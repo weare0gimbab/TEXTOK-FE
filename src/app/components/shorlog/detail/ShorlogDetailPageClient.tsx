@@ -4,7 +4,7 @@ import { fetchShorlogView } from '@/src/api/viewApi';
 import { useRegisterView } from '@/src/hooks/useRegisterView';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import ShorlogAuthorHeader from './ShorlogAuthorHeader';
 import ShorlogCommentSection from './ShorlogCommentSection';
 import ShorlogImageSlider from './ShorlogImageSlider';
@@ -65,7 +65,6 @@ function HighlightedContent({ content, progress, ttsMode }: { content: string; p
     );
   }
 
-  const highlighted = content.slice(0, highlightLength);
   const remaining = content.slice(highlightLength);
 
   const fadeStartLength = Math.max(0, highlightLength - Math.floor(totalLength * 0.03));
@@ -96,11 +95,10 @@ function HighlightedContent({ content, progress, ttsMode }: { content: string; p
 function PrevNextNavArrows({ currentId }: { currentId: number }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [prevId, setPrevId] = useState<string | null>(null);
-  const [nextId, setNextId] = useState<string | null>(null);
   const [isNavigating, setIsNavigating] = useState(false);
 
-  useEffect(() => {
+  // setState-in-effect 방지: searchParams + sessionStorage에서 파생값으로 직접 계산
+  const { prevId, nextId } = useMemo(() => {
     let prev = searchParams.get('prev');
     let next = searchParams.get('next');
 
@@ -123,11 +121,7 @@ function PrevNextNavArrows({ currentId }: { currentId: number }) {
       }
     }
 
-    setPrevId(prev);
-    setNextId(next);
-
-    // 페이지 로드 완료 시 네비게이션 상태 해제
-    setIsNavigating(false);
+    return { prevId: prev, nextId: next };
   }, [currentId, searchParams]);
 
   // 다음/이전 숏로그 데이터 프리페칭
@@ -247,39 +241,21 @@ export default function ShorlogDetailPageClient({
   isOwner = false,
   hideNavArrows = false,
 }: Props) {
-  if (!detail || !detail.content || typeof detail.content !== 'string') {
-    return (
-      <div className="flex h-full w-full items-center justify-center">
-        <p className="text-slate-600">숏로그를 불러오는 중입니다...</p>
-      </div>
-    );
-  }
-
+  // ── 모든 hook은 얼리 리턴보다 반드시 위에 선언 (react-hooks/rules-of-hooks) ──
   const [ttsProgress, setTtsProgress] = useState(0);
   const [ttsMode, setTtsMode] = useState<'none' | 'ai' | 'web'>('none');
   const [linkedBlogs, setLinkedBlogs] = useState<LinkedBlogDetail[]>([]);
   const [linkedBlogCount, setLinkedBlogCount] = useState(0);
   const [showLinkedBlogsModal, setShowLinkedBlogsModal] = useState(false);
-  const [currentCommentCount, setCurrentCommentCount] = useState(detail.commentCount);
-  const firstLineForAlt = detail.content.split('\n')[0]?.slice(0, 40) ?? '';
+  const [currentCommentCount, setCurrentCommentCount] = useState(detail?.commentCount ?? 0);
 
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}.${month}.${day} ${hours}:${minutes}`;
-  };
-
-  const isModified = detail.modifiedAt && detail.modifiedAt !== detail.createdAt;
+  const detailId = detail?.id ?? 0;
 
   // 연결된 블로그 정보 로드
-  const loadLinkedBlogs = async () => {
+  const loadLinkedBlogs = useCallback(async () => {
+    if (!detailId) return;
     try {
-      const blogIds = await fetchLinkedBlogIds(detail.id);
+      const blogIds = await fetchLinkedBlogIds(detailId);
       setLinkedBlogCount(blogIds.length);
 
       // 연결된 블로그가 있으면 상세 정보도 미리 로드
@@ -301,30 +277,85 @@ export default function ShorlogDetailPageClient({
       } else {
         setLinkedBlogs([]);
       }
-    } catch (error) {
+    } catch {
       // 에러 무시
     }
+  }, [detailId]);
+
+  // set-state-in-effect 방지: async IIFE로 비동기 fetch 후 setState
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!detailId) return;
+      try {
+        const blogIds = await fetchLinkedBlogIds(detailId);
+        if (cancelled) return;
+        setLinkedBlogCount(blogIds.length);
+        if (blogIds.length > 0) {
+          const blogDetails = await Promise.all(
+            blogIds.map(async (id) => {
+              const blog = await fetchBlogDetail(id);
+              return {
+                id: blog.id,
+                title: blog.title,
+                contentPre: blog.content?.slice(0, 100) + '...' || '',
+                author: blog.nickname,
+                modifiedAt: blog.updatedAt,
+                hashtagNames: blog.hashtagNames || [],
+              };
+            }),
+          );
+          if (!cancelled) setLinkedBlogs(blogDetails);
+        } else {
+          if (!cancelled) setLinkedBlogs([]);
+        }
+      } catch {
+        // 에러 무시
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [detailId]);
+
+  // 최근 본 게시물 등록
+  const viewMutation = useMutation({
+    mutationFn: () => fetchShorlogView(detailId),
+  });
+
+  useRegisterView({
+    contentKey: `shorlog:${detailId}`, // 고유키
+    cooldownMs: 5 * 60 * 1000, // 5분 쿨다운
+    dwellMs: 3000, // 숏로그 3초
+    onRegister: () => viewMutation.mutate(),
+  });
+
+  // ── guard는 모든 hook 선언 아래에 위치 ──
+  if (!detail || !detail.content || typeof detail.content !== 'string') {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-slate-600">숏로그를 불러오는 중입니다...</p>
+      </div>
+    );
+  }
+
+  const firstLineForAlt = detail.content.split('\n')[0]?.slice(0, 40) ?? '';
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
 
-  useEffect(() => {
-    loadLinkedBlogs();
-  }, [detail.id]);
+  const isModified = detail.modifiedAt && detail.modifiedAt !== detail.createdAt;
 
   const handleOpenLinkedBlogs = async () => {
     // 연결된 블로그가 있으면 항상 모달 열기 (1개든 여러 개든)
     setShowLinkedBlogsModal(true);
   };
-  // 최근 본 게시물 등록
-  const viewMutation = useMutation({
-    mutationFn: () => fetchShorlogView(detail.id),
-  });
-
-  useRegisterView({
-    contentKey: `shorlog:${detail.id}`, // 고유키
-    cooldownMs: 5 * 60 * 1000, // 5분 쿨다운
-    dwellMs: 3000, // 숏로그 3초
-    onRegister: () => viewMutation.mutate(),
-  });
 
   return (
     <div className="relative flex h-full w-full items-stretch">

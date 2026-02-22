@@ -2,7 +2,7 @@
 
 import { AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const API = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -14,28 +14,23 @@ export default function ResetPasswordPage() {
 
   const [pwError, setPwError] = useState('');
   const [pwCheckError, setPwCheckError] = useState('');
-  const [formError, setFormError] = useState('');
+  const [formError, setFormError] = useState<string>(() => {
+    if (typeof window === 'undefined') return '';
+    const u = sessionStorage.getItem('fp_username');
+    const e = sessionStorage.getItem('fp_email');
+    const t = sessionStorage.getItem('resetPasswordToken');
+    return !u || !e || !t ? '유효하지 않은 접근입니다.' : '';
+  });
 
-  // 새로 추가됨
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [token, setToken] = useState('');
-
-  /* ---------------------- Load from sessionStorage ---------------------- */
-  useEffect(() => {
-    const sUsername = sessionStorage.getItem('fp_username');
-    const sEmail = sessionStorage.getItem('fp_email');
-    const sToken = sessionStorage.getItem('resetPasswordToken');
-
-    if (!sUsername || !sEmail || !sToken) {
-      setFormError('유효하지 않은 접근입니다.');
-      return;
-    }
-
-    setUsername(sUsername);
-    setEmail(sEmail);
-    setToken(sToken);
-  }, []);
+  const [username] = useState<string>(() =>
+    typeof window !== 'undefined' ? sessionStorage.getItem('fp_username') ?? '' : ''
+  );
+  const [email] = useState<string>(() =>
+    typeof window !== 'undefined' ? sessionStorage.getItem('fp_email') ?? '' : ''
+  );
+  const [token] = useState<string>(() =>
+    typeof window !== 'undefined' ? sessionStorage.getItem('resetPasswordToken') ?? '' : ''
+  );
 
   /* ---------------------- Validation ---------------------- */
   const validatePw = (v: string) => {

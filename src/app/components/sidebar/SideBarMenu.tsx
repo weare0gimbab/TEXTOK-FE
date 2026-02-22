@@ -1,3 +1,4 @@
+import type { ElementType } from 'react';
 import {
   Bell,
   FileText,
@@ -11,7 +12,7 @@ import {
 } from 'lucide-react';
 
 export type MenuItem = {
-  icon: any;
+  icon: ElementType;
   label: string;
   href: string;
   alert?: boolean;

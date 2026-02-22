@@ -7,7 +7,7 @@ import { fetchMe } from '@/src/api/user';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '@/src/app/components/common/LoadingSpinner';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 async function fetchShorlogDetail(id: string): Promise<ShorlogDetail> {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
@@ -49,16 +49,12 @@ async function fetchShorlogDetail(id: string): Promise<ShorlogDetail> {
 export default function ProfileShorlogModalPage() {
   const params = useParams();
   const shorlogId = String(params.shorlogId);
-  const [isClosing, setIsClosing] = useState(false);
-
-  useEffect(() => {
+  const [isClosing] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      const closing = sessionStorage.getItem('profile_modal_closing');
-      if (closing === 'true') {
-        setIsClosing(true);
-      }
+      return sessionStorage.getItem('profile_modal_closing') === 'true';
     }
-  }, []);
+    return false;
+  });
 
   const { data: detail, isLoading, error } = useQuery({
     queryKey: ['shorlog-detail', shorlogId],

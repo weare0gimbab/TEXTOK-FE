@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -64,10 +65,13 @@ export default function SearchUserPage() {
               className="flex items-center gap-4 p-4 rounded-md bg-white hover:bg-slate-50 transition"
             >
               {/* 프로필 이미지 */}
-              <img
+              <Image
                 src={user.profileImgUrl || '/tmpProfile.png'}
                 alt="profile"
+                width={56}
+                height={56}
                 className="w-14 h-14 rounded-full object-cover bg-slate-200"
+                unoptimized
               />
 
               <div className="flex-1">
@@ -108,7 +112,7 @@ function UserSearchEmptyState({ keyword }: { keyword: string }) {
           </svg>
         </div>
         <p className="mt-4 text-lg font-medium text-slate-900">
-          "{keyword}"에 대한 검색 결과가 없습니다
+          {'"'}{keyword}{'"'}에 대한 검색 결과가 없습니다
         </p>
         <p className="mt-2 text-sm text-slate-500">다른 검색어로 시도해보세요</p>
         <div className="mt-4 text-xs text-slate-400">

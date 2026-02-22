@@ -13,11 +13,6 @@ const SORT_PARAM_TO_ENUM: Record<string, BlogSearchSort> = {
   popular: 'POPULAR',
 };
 
-const ENUM_TO_SORT_PARAM: Record<BlogSearchSort, string> = {
-  LATEST: 'latest',
-  VIEWS: 'views',
-  POPULAR: 'popular',
-};
 
 export default function BlogSearchPage() {
   const params = useSearchParams();
@@ -38,9 +33,6 @@ export default function BlogSearchPage() {
   const [items, setItems] = useState<BlogSummary[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasNext, setHasNext] = useState(false);
-  // const [totalCount, setTotalCount] = useState<number | null>(null);
-  const loadedCount = items.length;
-  const totalCount: number | null = hasNext ? null : loadedCount;
 
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -75,9 +67,9 @@ export default function BlogSearchPage() {
         setItems(res.content);
         setCursor(res.nextCursor ?? null);
         setHasNext(res.hasNext);
-      } catch (e: any) {
+      } catch (e) {
         console.error('블로그 검색 실패', e);
-        setError(e);
+        setError(e instanceof Error ? e : new Error(String(e)));
       } finally {
         setLoading(false);
       }
@@ -176,15 +168,6 @@ export default function BlogSearchPage() {
   );
 }
 
-/* ====== 상단 헤더 컴포넌트 ====== */
-
-type SearchHeaderProps = {
-  keyword: string;
-  totalCount: number | null;
-  sortEnum: BlogSearchSort;
-  onChangeSort: (value: BlogSearchSort) => void;
-};
-
 /* ====== 에러 / 빈 상태 컴포넌트 ====== */
 
 function BlogSearchErrorState({ onRetry }: { onRetry: () => void }) {
@@ -224,7 +207,7 @@ function BlogSearchEmptyState({ keyword }: { keyword: string }) {
           </svg>
         </div>
         <p className="mt-4 text-lg font-medium text-slate-900">
-          "{keyword}"에 대한 검색 결과가 없습니다
+          {'"'}{keyword}{'"'}에 대한 검색 결과가 없습니다
         </p>
         <p className="mt-2 text-sm text-slate-500">다른 검색어로 시도해보세요</p>
         <div className="mt-4 text-xs text-slate-400">
