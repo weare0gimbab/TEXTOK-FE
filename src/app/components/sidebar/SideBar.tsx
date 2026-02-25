@@ -140,7 +140,7 @@ export default function Sidebar() {
                 src="/icons/book.png"
                 alt="텍스톡 아이콘"
                 width={48}
-                height={39}
+                height={20}
                 className="object-contain"
               />
             </button>
@@ -155,8 +155,8 @@ export default function Sidebar() {
               <Image
                 src="/icons/logo.png"
                 alt="textok 로고"
-                width={145}
-                height={44}
+                width={120}
+                height={60}
                 className="object-contain"
               />
             </button>
