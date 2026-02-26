@@ -89,13 +89,11 @@ export default function Sidebar() {
 
       const target = e.target as Node;
 
-      // 사이드바 클릭 확인
       const clickedInsideSidebar = sidebarRef.current && sidebarRef.current.contains(target);
       const clickedInsideMore = moreModalRef.current && moreModalRef.current.contains(target);
       const clickedInsideSearch =
         searchWrapperRef.current && searchWrapperRef.current.contains(target);
 
-      // 사이드바 안쪽 클릭이면 아무것도 하지 않음
       if (clickedInsideSidebar) return;
 
       if (openPanel === 'search' && !clickedInsideSearch) {
@@ -122,25 +120,27 @@ export default function Sidebar() {
         ref={sidebarRef}
         className={`
           ${isCollapsed ? 'w-20' : 'w-60'}
-          bg-white border-r border-gray-200
+          bg-white border-r border-slate-100
           h-screen fixed hidden md:flex md:flex-col
           transition-all duration-300 ease-in-out
           z-[60]
+          dark:bg-slate-900 dark:border-slate-800
         `}
       >
-        {/* ================= HEADER ================= */}
-        <div className="pl-1 pr-1 pt-5 pb-2 flex items-center justify-center transition-all duration-300 ease-in-out">
+        {/* ── HEADER ── */}
+        <div className="flex items-center justify-center px-2 pb-2 pt-5 transition-all duration-300 ease-in-out">
           {isCollapsed && (
             <button
               type="button"
               onClick={goHome}
-              className="flex items-center justify-center rounded-xl text-slate-900 transition-opacity duration-300"
+              className="flex items-center justify-center rounded-xl p-2 text-slate-900 transition-colors duration-200 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
+              aria-label="홈으로"
             >
               <Image
                 src="/icons/book.png"
                 alt="텍스톡 아이콘"
-                width={48}
-                height={20}
+                width={36}
+                height={36}
                 className="object-contain"
               />
             </button>
@@ -150,42 +150,42 @@ export default function Sidebar() {
             <button
               type="button"
               onClick={goHome}
-              className="flex items-center justify-center transition-opacity duration-300 py-2"
+              className="flex items-center justify-center rounded-xl py-2 transition-opacity duration-200 hover:opacity-80 py-2"
+              aria-label="홈으로"
             >
               <Image
                 src="/icons/logo.png"
                 alt="textok 로고"
-                width={120}
-                height={60}
+                width={110}
+                height={30}
                 className="object-contain"
               />
             </button>
           )}
         </div>
 
-        {/* SEARCH WRAPPER */}
+        {/* ── SEARCH ── */}
         <div ref={searchWrapperRef}>
-          <div className="px-5 pt-2 pb-1">
+          <div className="px-3 pb-1 pt-2">
             <div
               onClick={() => {
                 if (isSearchOpen) closePanelFn();
                 else openPanelFn('search');
               }}
               className={`
-                relative flex items-center cursor-pointer overflow-hidden
-                transition-all duration-300 ease-in-out
-                mx-auto
+                relative flex cursor-pointer items-center overflow-hidden
+                transition-all duration-300 ease-in-out mx-auto
                 ${
                   isCollapsed
-                    ? 'h-10 w-10 justify-center rounded-full'
-                    : 'h-10 w-full rounded-full pl-10 pr-3 border'
+                    ? 'h-10 w-10 justify-center rounded-xl'
+                    : 'h-10 w-full rounded-xl pl-10 pr-3 border'
                 }
                 ${
                   isSearchOpen
-                    ? 'bg-sky-50 border-sky-200 text-[#2979FF]'
+                    ? 'bg-blue-50 border-blue-200 text-blue-600 dark:bg-blue-950 dark:border-blue-800 dark:text-blue-400'
                     : isCollapsed
-                      ? ' text-slate-600 hover:bg-slate-100'
-                      : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-white'
+                      ? 'text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400'
                 }
               `}
             >
@@ -194,22 +194,23 @@ export default function Sidebar() {
                   flex items-center justify-center
                   ${
                     isCollapsed
-                      ? 'h-6 w-6 text-slate-600'
-                      : 'pointer-events-none absolute left-3 top-1/2 h-6 w-6 -translate-y-1/2 text-slate-400'
+                      ? 'h-5 w-5'
+                      : 'pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400'
                   }
                 `}
               >
-                <Search size={18} />
+                <Search size={17} />
               </div>
 
               <input
                 type="text"
                 readOnly
                 value={effectiveSidebarKeyword}
-                placeholder="검색어를 입력하세요"
+                placeholder="검색"
                 className={`
                   bg-transparent text-sm outline-none text-slate-800 placeholder:text-slate-400
                   transition-all duration-300 ease-in-out
+                  dark:text-slate-200
                   ${isCollapsed ? 'w-0 opacity-0' : 'w-full opacity-100'}
                 `}
               />
@@ -225,8 +226,8 @@ export default function Sidebar() {
           )}
         </div>
 
-        {/* MENU LIST */}
-        <nav className="flex-1 px-3 space-y-1 text-[15px]">
+        {/* ── MENU ── */}
+        <nav className="flex-1 space-y-0.5 px-3 py-1 text-[14px]">
           {menu.map((item) => {
             const isActive =
               item.href === '/profile' ? pathname.startsWith('/profile') : pathname === item.href;
@@ -243,37 +244,32 @@ export default function Sidebar() {
                       else openPanelFn('more');
                     }}
                     className={`
-                      w-full text-left flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 ease-in-out
-                      ${isMoreOpen ? 'text-blue-600 font-medium bg-slate-50' : 'text-gray-600 hover:bg-gray-100'}
+                      w-full text-left flex items-center gap-3 rounded-xl px-3 py-2.5
+                      transition-all duration-150 ease-in-out
+                      ${
+                        isMoreOpen
+                          ? 'bg-blue-50 text-blue-600 font-semibold dark:bg-blue-950 dark:text-blue-400'
+                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
+                      }
                     `}
                   >
-                    <div
-                      className={`
-                        flex items-center justify-center flex-shrink-0
-                        ${
-                          isMoreOpen
-                            ? 'text-[#2979FF]'
-                            : isCollapsed
-                              ? ' text-slate-600 hover:bg-slate-100'
-                              : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-white'
-                        }
-                      `}
-                    >
-                      <item.icon size={20} />
+                    <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
+                      <item.icon size={19} />
                     </div>
 
                     <span
                       className={`
                         whitespace-nowrap transition-all duration-300 ease-in-out
-                        ${isCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-auto opacity-100'}
+                        ${isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-auto opacity-100'}
                       `}
                     >
                       {item.label}
                     </span>
                   </button>
 
+                  {/* 축소 상태 툴팁 */}
                   {isCollapsed && (
-                    <span className="absolute left-20 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition pointer-events-none">
+                    <span className="pointer-events-none absolute left-[72px] top-1/2 z-50 -translate-y-1/2 whitespace-nowrap rounded-lg bg-slate-800 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 dark:bg-slate-700">
                       {item.label}
                     </span>
                   )}
@@ -327,66 +323,61 @@ export default function Sidebar() {
                     router.push(item.href);
                   }}
                   className={`
-                    w-full text-left flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 ease-in-out
+                    w-full text-left flex items-center gap-3 rounded-xl px-3 py-2.5
+                    transition-all duration-150 ease-in-out
                     ${
                       isActive || (item.label === '알림' && isNotificationOpen)
-                        ? 'text-blue-600 font-medium'
-                        : 'text-gray-600 hover:bg-gray-100'
+                        ? 'bg-blue-50 text-blue-600 font-semibold dark:bg-blue-950 dark:text-blue-400'
+                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
                     }
                   `}
                 >
-                  <div
-                    className={`
-                      relative flex items-center justify-center flex-shrink-0
-                      ${isCollapsed ? 'w-6 h-6' : 'w-7 h-7'}
-                    `}
-                  >
+                  {/* 아이콘 영역 */}
+                  <div className="relative flex h-5 w-5 flex-shrink-0 items-center justify-center">
                     {isProfile && isLogin ? (
                       <Image
                         src={loginUser?.profileImgUrl || '/tmpProfile.png'}
-                        alt="profile"
-                        width={28}
-                        height={28}
-                        className="w-7 h-7 rounded-full object-cover"
+                        alt="프로필"
+                        width={24}
+                        height={24}
+                        className="h-6 w-6 rounded-full object-cover ring-2 ring-white dark:ring-slate-900"
                         unoptimized
                       />
                     ) : (
-                      <div
-                        className={`
-                          relative flex items-center justify-center flex-shrink-0
-                          ${isCollapsed ? 'w-6 h-6' : 'w-7 h-7'}
-                        `}
-                      >
-                        <item.icon size={20} />
+                      <>
+                        <item.icon size={19} />
 
                         {item.label === '메시지' && unreadMessagesCount > 0 && (
-                          <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
+                          <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-slate-900" />
                         )}
 
                         {item.label === '알림' && unreadCount > 0 && (
-                          <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
+                          <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-slate-900" />
                         )}
-                      </div>
+                      </>
                     )}
                   </div>
 
+                  {/* 레이블 */}
                   <span
                     className={`
                       whitespace-nowrap transition-all duration-300 ease-in-out
-                      ${isCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-auto opacity-100'}
+                      ${isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-auto opacity-100'}
                     `}
                   >
                     {item.label}
                   </span>
                 </button>
 
+                {/* 축소 상태 툴팁 */}
                 {isCollapsed && (
                   <span
                     className="
-                      absolute left-20 top-1/2 -translate-y-1/2
-                      px-2 py-1 bg-gray-900 text-white text-xs rounded
-                      opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none
-                      whitespace-nowrap z-50
+                      pointer-events-none absolute left-[72px] top-1/2 z-50
+                      -translate-y-1/2 whitespace-nowrap rounded-lg
+                      bg-slate-800 px-2.5 py-1.5 text-xs font-medium text-white
+                      opacity-0 shadow-lg transition-opacity duration-150
+                      group-hover:opacity-100 dark:bg-slate-700
                     "
                   >
                     {item.label}
@@ -396,11 +387,12 @@ export default function Sidebar() {
             );
           })}
 
+          {/* 비로그인 로그인 버튼 */}
           {!isLogin && !isCollapsed && (
-            <div className="pt-2 pb-6 border-b border-gray-200">
+            <div className="pb-4 pt-2">
               <button
                 onClick={() => open()}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition"
+                className="w-full rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-500/20 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md hover:shadow-blue-500/25 active:translate-y-0"
               >
                 로그인
               </button>
