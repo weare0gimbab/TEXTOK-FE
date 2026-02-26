@@ -392,7 +392,7 @@ export default function Sidebar() {
             <div className="pb-4 pt-2">
               <button
                 onClick={() => open()}
-                className="w-full rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-500/20 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md hover:shadow-blue-500/25 active:translate-y-0"
+                className="w-full rounded-xl bg-[#2979FF] hover:bg-[#1f5edb] px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-500/20 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md hover:shadow-blue-500/25 active:translate-y-0"
               >
                 로그인
               </button>

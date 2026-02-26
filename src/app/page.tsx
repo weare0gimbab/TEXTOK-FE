@@ -57,9 +57,7 @@ export function BrowserMockup({
 // 모바일 캡쳐용 (세로 비율) - 폰 프레임
 export function PhoneMockup({ src, alt, priority, className }: MockupProps) {
   return (
-    <div
-      className={clsx('rounded-[2rem] border  bg-white shadow-2xl shadow-slate-100/70', className)}
-    >
+    <div className={clsx('rounded-[2rem] border   shadow-2xl shadow-slate-100/70', className)}>
       <div className="rounded-[1.6rem] border border-slate-100 bg-black/5 p-2">
         {/* 9:16 비율 */}
         <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[1.25rem] bg-white">
@@ -189,7 +187,7 @@ export default function MainPage() {
                   <>
                     <button
                       onClick={handleShorlogClick}
-                      className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 active:translate-y-0"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#2979FF] px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/30 active:translate-y-0"
                     >
                       숏로그 둘러보기 <span aria-hidden>→</span>
                     </button>
@@ -204,7 +202,7 @@ export default function MainPage() {
                   <>
                     <button
                       onClick={handleLogin}
-                      className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 active:translate-y-0"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#2979FF] text-white  hover:bg-[#1f5edb] px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/30 active:translate-y-0"
                     >
                       시작하기 <span aria-hidden>→</span>
                     </button>
@@ -302,14 +300,14 @@ export default function MainPage() {
               }
             />
             <PreviewRow
-              eyebrow="COLLECT"
-              title="매번 찾기 번거로운 글, 한 곳에 모아두기"
-              desc="북마크, 나의 글 기반으로 저장해두고, 필요한 순간에 바로 꺼내보세요."
+              eyebrow="ATTACH"
+              title="내 글에 딱 맞는 이미지 첨부하기"
+              desc="글의 분위기와 주제에 맞는 이미지를 찾아서, 바로 첨부할 수 있어요."
               mockup={
                 <div className="w-[min(380px,92vw)]">
                   <PhoneMockup
-                    src="/screenshots/collect2.png"
-                    alt="텍톡 북마크 화면"
+                    src="/screenshots/attach.png"
+                    alt="텍톡 이미지 첨부 화면"
                     urlText="textok.store"
                   />
                 </div>
@@ -326,6 +324,20 @@ export default function MainPage() {
                   <PhoneMockup
                     src="/screenshots/search2.png"
                     alt="텍톡 검색/피드 화면"
+                    urlText="textok.store"
+                  />
+                </div>
+              }
+            />
+            <PreviewRow
+              eyebrow="COLLECT"
+              title="매번 찾기 번거로운 글, 한 곳에 모아두기"
+              desc="북마크, 나의 글 기반으로 저장해두고, 필요한 순간에 바로 꺼내보세요."
+              mockup={
+                <div className="w-[min(380px,92vw)]">
+                  <PhoneMockup
+                    src="/screenshots/collect3.png"
+                    alt="텍톡 북마크 화면"
                     urlText="textok.store"
                   />
                 </div>
@@ -353,7 +365,7 @@ export default function MainPage() {
             ) : (
               <button
                 onClick={handleLogin}
-                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition hover:-translate-y-0.5 hover:bg-blue-700"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#2979FF] text-white  px-8 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition hover:-translate-y-0.5 hover:bg-blue-700"
               >
                 시작하기 <span aria-hidden>→</span>
               </button>
